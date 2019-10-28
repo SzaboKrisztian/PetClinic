@@ -1,0 +1,41 @@
+\documentclass[12pt, a4paper]{article}
+
+\setlength{\parskip}{0.5em}
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{lightgray}{gray}{0.9}
+
+\lstset{
+    showstringspaces=false,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color[grey]{0.6},
+    stringstyle=\color[RGB]{255,150,75}
+}
+
+\newcommand{\inlinecode}[2]{\colorbox{lightgray}{\lstinline[language=#1]$#2$}}
+
+\title{Pet clinic mandatory assignment report}
+\author{Krisztian Szabo}
+\date{\today{}}
+
+\begin{document}
+
+\maketitle
+\pagenumbering{gobble}
+\newpage
+\pagenumbering{arabic}
+\section{Identifying changes}
+I already had my development environment set up, with JDK, Maven, and git correctly installed and added to the environment variables. Cloning the repository to a local folder was also trivial.
+
+The first real step in tackling this assignment was to identify where to make changes within the codebase. By default, the Pet Clinic web application uses \textbf{hsqldb} as data storage. I found out that it works as an in-memory database, which creates its structure and populates it with data at runtime. So the place to modify the table structure is in the \textbf{src/main/resources/db/hsqldb/schema.sql} file and adding data to populate it in the \textbf{src/main/resources/db/hsqldb/data.sql} file.
+
+The next thing to be modified was to add a new menu entry on the navigation bar for the future view that needed to be created. I found the navigation bar as a thymeleaf fragment in the \textbf{src/main/resources/templates/fragments/layout.html} file. I added an additional entry and pointed it to "/drugs" mapping, which for the moment does not yet exist.
+
+Next task was to define the \textbf{Drug} class, which in our case should extend the existing \textbf{NamedEntity} class. It has to define the \textbf{type}, \textbf{batchNumber}, and \textbf{expiryDate} attributes, and bind them to their respective SQL columns. The \textbf{id} and \textbf{name} attributes are taken care of in the \textbf{BaseEntity} and \textbf{NamedEntity} superclasses, respectively.
+
+Then, I defined the \textbf{DrugRepository} interface, which defines some basic methods for retrieving and saving \textbf{Drug} entities from and to the database. Having done this, I moved to writing the \textbf{DrugController} class. In it, I added an instance of \textbf{DrugRepository} and defined the GET mapping for "/drugs". All this does is it inserts a list of all the available \textbf{Drug} entities into the model, and returns the \textbf{src/main/resources/templates/drugs/drugs.html} view. Next I went ahead and actually created the view, which consists of a simple html table which is populated by thymeleaf by iterating over the list of \textbf{Drug} entities that was sent from the controller through the model.
+
+\end{document}
