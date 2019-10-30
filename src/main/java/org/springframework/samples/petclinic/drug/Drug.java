@@ -15,12 +15,16 @@
  */
 package org.springframework.samples.petclinic.drug;
 
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PropertyComparator;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.model.NamedEntity;
+import org.springframework.samples.petclinic.owner.Pet;
 import org.springframework.samples.petclinic.owner.PetType;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.*;
 
 /**
  * Simple business object representing a drug.
@@ -31,9 +35,9 @@ import java.time.LocalDate;
 @Table(name = "drugs")
 public class Drug extends NamedEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "animal_type_id")
-    private PetType type;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "drugs_for_animal", joinColumns = @JoinColumn(name = "drug_id"), inverseJoinColumns = @JoinColumn(name = "animal_type_id"))
+    private Set<PetType> petTypes;
 
     @Column(name = "batch_number")
     private String batchNumber;
@@ -42,13 +46,29 @@ public class Drug extends NamedEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate expiryDate;
 
-
-    public PetType getType() {
-        return type;
+    private Set<PetType> getPetTypesInternal() {
+        if (this.petTypes == null) {
+            this.petTypes = new HashSet<>();
+        }
+        return this.petTypes;
     }
 
-    public void setType(PetType type) {
-        this.type = type;
+    protected void setPetTypesInternal(Set<PetType> petTypes) {
+        this.petTypes = petTypes;
+    }
+
+    public List<PetType> getPetTypes() {
+        List<PetType> sortedPetTypes = new ArrayList<>(getPetTypesInternal());
+        PropertyComparator.sort(sortedPetTypes, new MutableSortDefinition("id", false, true));
+        return Collections.unmodifiableList(sortedPetTypes);
+    }
+
+    public int getNrOfPetTypes() {
+        return getPetTypesInternal().size();
+    }
+
+    public void addPetType(PetType petType) {
+        getPetTypesInternal().add(petType);
     }
 
     public String getBatchNumber() {

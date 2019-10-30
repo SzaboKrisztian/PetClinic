@@ -27,7 +27,7 @@
 \pagenumbering{gobble}
 \newpage
 \pagenumbering{arabic}
-\section{Identifying changes}
+\section{Implementing the changes}
 I already had my development environment set up, with JDK, Maven, and git correctly installed and added to the environment variables. Cloning the repository to a local folder was also trivial.
 
 The first real step in tackling this assignment was to identify where to make changes within the codebase. By default, the Pet Clinic web application uses \textbf{hsqldb} as data storage. I found out that it works as an in-memory database, which creates its structure and populates it with data at runtime. So the place to modify the table structure is in the \textbf{src/main/resources/db/hsqldb/schema.sql} file and adding data to populate it in the \textbf{src/main/resources/db/hsqldb/data.sql} file.
@@ -37,5 +37,7 @@ The next thing to be modified was to add a new menu entry on the navigation bar 
 Next task was to define the \textbf{Drug} class, which in our case should extend the existing \textbf{NamedEntity} class. It has to define the \textbf{type}, \textbf{batchNumber}, and \textbf{expiryDate} attributes, and bind them to their respective SQL columns. The \textbf{id} and \textbf{name} attributes are taken care of in the \textbf{BaseEntity} and \textbf{NamedEntity} superclasses, respectively.
 
 Then, I defined the \textbf{DrugRepository} interface, which defines some basic methods for retrieving and saving \textbf{Drug} entities from and to the database. Having done this, I moved to writing the \textbf{DrugController} class. In it, I added an instance of \textbf{DrugRepository} and defined the GET mapping for "/drugs". All this does is it inserts a list of all the available \textbf{Drug} entities into the model, and returns the \textbf{src/main/resources/templates/drugs/drugs.html} view. Next I went ahead and actually created the view, which consists of a simple html table which is populated by thymeleaf by iterating over the list of \textbf{Drug} entities that was sent from the controller through the model.
+
+After getting this to work, I realized that it would make logical sense to define a many-to-many relationship between the newly created drugs and the animal types, as one drug can most likely be used for several animals. To achieve this, I added a new table to the \textbf{schema.sql} file, that only serves the purpose of mapping this relationship, by the means of having only two columns, which are each a foreign key pointing to the \textbf{id} columns of the \textbf{drugs} and \textbf{types} tables, respectively. I then went ahead and modified the \textbf{Drugs} POJO to hold, instead of a single \textbf{PetType} attribute, a \textbf{List<PetType>}. The last change needed to be made was in the view, for each drug displayed in the table, to iterate over all of its associated \textbf{PetType}s and show them in a nicely formatted string.
 
 \end{document}

@@ -18,7 +18,10 @@
     <tbody>
     <tr th:each="drug : ${drugs}">
         <td th:text="${drug.getName()}"/>
-        <td th:text="${drug.getType().getName()}"/>
+        <td>
+            <span th:if="${drug.getNrOfPetTypes()} > 0" th:each="petType, iter : ${drug.getPetTypes()}" th:text="${petType.getName()} + (!${iter.last} ? ', ' : '')"></span>
+            <span th:unless="${drug.getNrOfPetTypes()} > 0">none</span>
+        </td>
         <td th:text="${drug.getBatchNumber()}"/>
         <td th:text="${drug.getExpiryDate()}"/>
     </tr>

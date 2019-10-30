@@ -52,8 +52,19 @@ INSERT INTO visits VALUES (2, 8, '2013-01-02', 'rabies shot');
 INSERT INTO visits VALUES (3, 8, '2013-01-03', 'neutered');
 INSERT INTO visits VALUES (4, 7, '2013-01-04', 'spayed');
 
-INSERT INTO drugs VALUES (1, 'Drug one', 1, 'B015L087', '2020-12-21');
-INSERT INTO drugs VALUES (2, 'Drug two', 2, 'B005L027', '2020-12-21');
-INSERT INTO drugs VALUES (3, 'Drug three', 5, 'B132L422', '2020-12-21');
-INSERT INTO drugs VALUES (4, 'Drug four', 6, 'B073L132', '2020-12-21');
-INSERT INTO drugs VALUES (5, 'Drug five', 2, 'B277L091', '2020-12-21');
+INSERT INTO drugs VALUES (1, 'Drug one', 'B015L087', '2020-12-21');
+INSERT INTO drugs VALUES (2, 'Drug two', 'B005L027', '2022-06-29');
+INSERT INTO drugs VALUES (3, 'Drug three', 'B132L422', '2022-08-13');
+INSERT INTO drugs VALUES (4, 'Drug four', 'B073L132', '2021-10-10');
+INSERT INTO drugs VALUES (5, 'Drug five', 'B277L091', '2024-01-01');
+
+INSERT INTO drugs_for_animal VALUES (1, 1);
+INSERT INTO drugs_for_animal VALUES (1, 2);
+INSERT INTO drugs_for_animal VALUES (2, 3);
+INSERT INTO drugs_for_animal VALUES (2, 4);
+INSERT INTO drugs_for_animal VALUES (3, 5);
+INSERT INTO drugs_for_animal VALUES (4, 6);
+INSERT INTO drugs_for_animal VALUES (5, 1);
+INSERT INTO drugs_for_animal VALUES (5, 2);
+INSERT INTO drugs_for_animal VALUES (5, 5);
+INSERT INTO drugs_for_animal VALUES (5, 6);

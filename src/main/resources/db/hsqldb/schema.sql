@@ -66,9 +66,14 @@ CREATE INDEX visits_pet_id ON visits (pet_id);
 CREATE TABLE drugs (
   id             INTEGER IDENTITY PRIMARY KEY,
   name           VARCHAR(80),
-  animal_type_id INTEGER NOT NULL,
   batch_number   VARCHAR(30),
   expiry_date    DATE
  );
- ALTER TABLE drugs ADD CONSTRAINT fk_drugs_types FOREIGN KEY (animal_type_id) REFERENCES types (id);
  CREATE INDEX drugs_name ON drugs (name);
+ 
+CREATE TABLE drugs_for_animal (
+  drug_id        INTEGER NOT NULL,
+  animal_type_id INTEGER NOT NULL
+);
+ALTER TABLE drugs_for_animal ADD CONSTRAINT fk_drugs_for_animal_types FOREIGN KEY (animal_type_id) REFERENCES types (id);
+ALTER TABLE drugs_for_animal ADD CONSTRAINT fk_drugs_for_animal_drug FOREIGN KEY (drug_id) REFERENCES drugs (id);
