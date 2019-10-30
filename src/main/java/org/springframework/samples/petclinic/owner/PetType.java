@@ -26,6 +26,10 @@ import org.springframework.samples.petclinic.model.NamedEntity;
  */
 @Entity
 @Table(name = "types")
-public class PetType extends NamedEntity {
+public class PetType extends NamedEntity implements Comparable {
 
+    @Override
+    public int compareTo(Object o) {
+        return Integer.compare(this.getId(), ((PetType) o).getId());
+    }
 }

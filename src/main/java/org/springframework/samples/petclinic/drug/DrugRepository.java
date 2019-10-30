@@ -13,5 +13,8 @@ public interface DrugRepository extends Repository<Drug, Integer> {
     @Transactional(readOnly = true)
     List<Drug> findAll();
 
-    void save(Drug drug);
+    Drug save(Drug drug);
+
+    @Transactional
+    void deleteDrugById(Integer id);
 }
