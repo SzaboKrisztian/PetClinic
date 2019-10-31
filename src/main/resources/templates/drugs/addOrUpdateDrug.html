@@ -24,7 +24,7 @@
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <input type="hidden" name="drugId" th:value="${drug.id}" />
+            <input type="hidden" name="id" th:value="*{id}" />
             <button th:with="text=${drug.isNew()} ? 'Add drug' : 'Update drug'"
                     class="btn btn-default" type="submit" th:text="${text}"></button>
         </div>

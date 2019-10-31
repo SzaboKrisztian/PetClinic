@@ -54,7 +54,6 @@ public class DrugController {
 
     @PostMapping("/drugs/new")
     public String processAddDrugForm(@Valid Drug drug, BindingResult result, Map<String, Object> model) {
-        System.out.println(drug.getPetTypes());
         if (result.hasErrors()) {
             model.put("drug", drug);
             return ADD_OR_UPDATE_DRUG_VIEW;
@@ -72,11 +71,12 @@ public class DrugController {
     }
 
     @PostMapping("/drugs/edit/{drug_Id}")
-    public String processUpdateDrugForm(@Valid Drug drug, BindingResult result, Map<String, Object> model) {
+    public String processUpdateDrugForm(@Valid Drug drug, @PathVariable("drug_Id") int drug_Id, BindingResult result, Map<String, Object> model) {
         if (result.hasErrors()) {
             model.put("drug", drug);
             return ADD_OR_UPDATE_DRUG_VIEW;
         } else {
+            drug.setId(drug_Id);
             this.drugRepo.save(drug);
             return "redirect:/drugs";
         }

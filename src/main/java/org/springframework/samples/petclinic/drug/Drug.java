@@ -37,7 +37,7 @@ public class Drug extends NamedEntity {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "drugs_for_animal", joinColumns = @JoinColumn(name = "drug_id"), inverseJoinColumns = @JoinColumn(name = "animal_type_id"))
-    private Set<PetType> petTypes;
+    public Set<PetType> petTypes;
 
     @Column(name = "batch_number")
     private String batchNumber;
@@ -52,6 +52,10 @@ public class Drug extends NamedEntity {
         }
         return this.petTypes;
     }
+
+//    public void setPetTypes(Set<PetType> petTypes) {
+//        setPetTypesInternal(petTypes);
+//    }
 
     protected void setPetTypesInternal(Set<PetType> petTypes) {
         this.petTypes = petTypes;
