@@ -19,7 +19,6 @@ import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.model.NamedEntity;
-import org.springframework.samples.petclinic.owner.Pet;
 import org.springframework.samples.petclinic.owner.PetType;
 
 import javax.persistence.*;
@@ -46,33 +45,16 @@ public class Drug extends NamedEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate expiryDate;
 
-    private Set<PetType> getPetTypesInternal() {
-        if (this.petTypes == null) {
-            this.petTypes = new HashSet<>();
-        }
-        return this.petTypes;
-    }
-
-//    public void setPetTypes(Set<PetType> petTypes) {
-//        setPetTypesInternal(petTypes);
-//    }
-
-    protected void setPetTypesInternal(Set<PetType> petTypes) {
+    public void setPetTypes(Set<PetType> petTypes) {
         this.petTypes = petTypes;
     }
 
-    public List<PetType> getPetTypes() {
-        List<PetType> sortedPetTypes = new ArrayList<>(getPetTypesInternal());
-        PropertyComparator.sort(sortedPetTypes, new MutableSortDefinition("id", false, true));
-        return Collections.unmodifiableList(sortedPetTypes);
+    public Set<PetType> getPetTypes() {
+        return this.petTypes;
     }
 
     public int getNrOfPetTypes() {
-        return getPetTypesInternal().size();
-    }
-
-    public void addPetType(PetType petType) {
-        getPetTypesInternal().add(petType);
+        return this.petTypes.size();
     }
 
     public String getBatchNumber() {
