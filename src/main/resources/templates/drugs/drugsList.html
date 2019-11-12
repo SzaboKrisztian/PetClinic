@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
-<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'drugs')}">
+<html xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'drugs')}">
 
 <body>
 
@@ -21,7 +22,9 @@
     <tr th:each="drug : ${drugs}">
         <td th:text="${drug.getName()}"></td>
         <td>
-            <span th:if="${drug.getNrOfPetTypes()} > 0" th:each="petType, iter : ${drug.getPetTypes()}" th:text="${petType.getName()} + (!${iter.last} ? ', ' : '')"></span>
+            <span th:if="${drug.getNrOfPetTypes()} > 0"
+                  th:each="petType, iter : ${drug.getPetTypes()}"
+                  th:text="${petType.getName()} + (!${iter.last} ? ', ' : '')"></span>
             <span th:unless="${drug.getNrOfPetTypes()} > 0">none</span>
         </td>
         <td th:text="${drug.getBatchNumber()}"></td>

@@ -5,17 +5,21 @@
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{hyperref}
+\usepackage{listings}
 \definecolor{lightgray}{gray}{0.9}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mygreen}{rgb}{0,0.5,0}
 
 \lstset{
-    showstringspaces=false,
-    basicstyle=\ttfamily,
-    keywordstyle=\color{blue},
-    commentstyle=\color[grey]{0.6},
-    stringstyle=\color[RGB]{255,150,75}
+  frame=single,
+  rulecolor=\color{black}, 
+  basicstyle=\footnotesize\ttfamily,
+  breaklines=true,
+  keywordstyle=\color{blue},
+  stringstyle=\color{mygreen},
+  showstringspaces=false
 }
-
-\newcommand{\inlinecode}[2]{\colorbox{lightgray}{\lstinline[language=#1]$#2$}}
 
 \title{Pet clinic mandatory assignment report}
 \author{Krisztian Szabo}
@@ -24,6 +28,9 @@
 \begin{document}
 
 \maketitle
+\begin{center}
+\url{https://github.com/SzaboKrisztian/PetClinic}
+\end{center}
 \pagenumbering{gobble}
 \newpage
 
@@ -32,10 +39,21 @@
 \newpage
 
 \section{Introduction}
-Spring is an open source Model-View-Controller based application framework for Java, that is meant to facilitate the development of web applications. Spring boot is an oppinionated approach that is mean to help the developer get going fast, by providing sensible defaults and including what are considered to be the best and most used third party libraries.
+In this project, I employed the following technologies:
+\begin{itemize}
+\item \textbf{Java}: A high level object-oriented programming language that runs on the Java Virtual Machine.
+\item \textbf{Spring}: an open source Model-View-Controller based application framework for Java, that is meant to facilitate the development of web applications. Spring boot is an opinionated approach that is mean to help the developer get going fast, by providing sensible defaults and including what are considered to be the best and most used third party libraries.
 
-The Model-View-Controller (hereforth referred to as MVC) is a software design pattern, or as some call it, a high-level software architecture pattern, that is widely used in developing applications that feature a user interface. Its purpose is to decouple the business logic (the models) from the user interface (the views) and provide a means of communication between these two elements (the controllers).
+The Model-View-Controller (henceforth referred to as MVC) is a software design pattern, or as some call it, a high-level software architecture pattern, that is widely used in developing applications that feature a user interface. Its purpose is to decouple the business logic (the models) from the user interface (the views) and provide a means of communication between these two elements (the controllers). There are variations as to how the MVC pattern can be implemented, but in the more classic approach, the controller is the entry point to the program. This instantiates the required models and views, to which it passes a reference of itself, to facilitate communication from them back to the controller. The user only interacts with the views, which have the role of displaying themselves, and of accepting user input. This input is processed by the controller, which decides what action to take, like, for example, changing some values in the model.
 
+The MVC pattern achieves great decoupling between the different components, and allows for the models and views to be reused.
+\item \textbf{Thymeleaf}: A powerful and very flexible templating engine for Spring.
+\item \textbf{Tomcat}: A pure Java HTTP web server which can run Java code.
+\item \textbf{Maven}: A build automation tool primarily used for Java projects. This allows for easy management of a projects dependencies.
+\item \textbf{Git}: The most popular version control tool to keep track of changes to a code base.
+\end{itemize}
+
+\newpage
 \section{Implementing the changes}
 I already had my development environment set up, with JDK, Maven, and git correctly installed and added to the environment variables. Cloning the repository to a local folder was also trivial.
 
@@ -47,8 +65,247 @@ Next task was to define the \textbf{Drug} class, which in our case should extend
 
 Then, I defined the \textbf{DrugRepository} interface, which defines some basic methods for retrieving and saving \textbf{Drug} entities from and to the database. Having done this, I moved to writing the \textbf{DrugController} class. In it, I added an instance of \textbf{DrugRepository} and defined the GET mapping for "/drugs". All this does is it inserts a list of all the available \textbf{Drug} entities into the model, and returns the \textbf{src/main/resources/templates/drugs/drugs.html} view. Next I went ahead and actually created the view, which consists of a simple html table which is populated by thymeleaf by iterating over the list of \textbf{Drug} entities that was sent from the controller through the model.
 
-After getting this to work, I realized that it would make logical sense to define a many-to-many relationship between the newly created drugs and the animal types, as one drug can most likely be used for several animals. To achieve this, I added a new table to the \textbf{schema.sql} file, that only serves the purpose of mapping this relationship, by the means of having only two columns, which are each a foreign key pointing to the \textbf{id} columns of the \textbf{drugs} and \textbf{types} tables, respectively. I then went ahead and modified the \textbf{Drugs} POJO to hold, instead of a single \textbf{PetType} attribute, a \textbf{Set<PetType>}. The last change needed to be made was in the view, for each drug displayed in the table, to iterate over all of its associated \textbf{PetType} objects and show them in a nicely formatted string.
+After getting this to work, I realized that it would make logical sense to define a many-to-many relationship between the newly created drugs and the animal types, as one drug can most likely be used for several animals. To achieve this, I added a new table to the \textbf{schema.sql} file, that only serves the purpose of mapping this relationship, by the means of having only two columns, which are each a foreign key pointing to the \textbf{id} columns of the \textbf{drugs} and \textbf{types} tables, respectively. I then went ahead and modified the \textbf{Drugs} POJO to hold, instead of a single \textbf{PetType} attribute, a \textbf{Set\textless PetType\textgreater}. The last change needed to be made was in the view, for each drug displayed in the table, to iterate over all of its associated \textbf{PetType} objects and show them in a nicely formatted string.
 
 Inspired by the way thymeleaf templates are used throughout the project to generate and populate web forms, I then went ahead and wrote \textbf{src/main/resources/templates/drugs/addOrUpdateDrug.html} in a similar manner, to serve as the view for both adding and updating \textbf{Drug} entries. For this to work, I next had to define the four new mappings in the \textbf{DrugController} class, a \textit{GET} and a \textit{POST} mapping for both the add and update functionality, and I added the relevant links in the main \textbf{drugs.html} view, namely an \textit{"Add new drug"} button, and an \textit{"Edit"} and a \textit{"Delete"} link for each entry in the table. I also added a \textbf{DrugValidator} class to handle data validation in these two new views.
+
+\newpage
+\section{Final thoughts}
+
+The process of making changes to this sample Spring project was quite enlightening, and I feel that I learned a lot from it. I got to see for the first time a code base that uses Spring's capabilities to the maximum, and I now realize that last semester's project could have been done in a much more efficient manner (though, to be fair, there were some limitations imposed on us by our teachers, for specific purposes). The most difficult part, so to speak, was understanding the code base. This took up the greatest part of my time spent on this project. Otherwise, after having understood what the original authors have built, implementing new functionality in the same style as theirs was fairly straight-forward.
+
+I did hit a snag at one point, which took me a good few hours to debug. It had to do with getting Spring / Thymeleaf to correctly bind the multi-select box in the \textbf{addOrUpdateDrug.html} view to the \textbf{Drug} class' \textbf{petType} attribute, which is a collection of the type \textbf{Set\textless PetType\textgreater}. I didn't find any relevant documentation on this behavior, but apparently, when binding a web form to an object, Spring expects the POJO to have plain getters and setters for the attributes that are to be bound. I had originally written a slightly more complicated setter for this collection attribute in the \textbf{Drug} class, inspired by the authors' \textbf{Owner} class, and this lead Spring not being able to insert the data submitted in the web form into the POJO's respective attribute.
+
+\newpage
+\section{Code listings}
+
+\begin{lstlisting}[language=SQL, title='schema.sql']
+CREATE TABLE drugs (
+  id             INTEGER IDENTITY PRIMARY KEY,
+  name           VARCHAR(80),
+  batch_number   VARCHAR(30),
+  expiry_date    DATE
+);
+CREATE INDEX drugs_name ON drugs (name);
+ 
+CREATE TABLE drugs_for_animal (
+  drug_id        INTEGER NOT NULL,
+  animal_type_id INTEGER NOT NULL
+);
+ALTER TABLE drugs_for_animal ADD CONSTRAINT fk_drugs_for_animal_types FOREIGN KEY (animal_type_id) REFERENCES types (id);
+ALTER TABLE drugs_for_animal ADD CONSTRAINT fk_drugs_for_animal_drug FOREIGN KEY (drug_id) REFERENCES drugs (id);
+\end{lstlisting}
+
+\begin{lstlisting}[language=Java, title='Drug.java']
+@Entity
+@Table(name = "drugs")
+public class Drug extends NamedEntity {
+
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "drugs_for_animal", joinColumns = @JoinColumn(name = "drug_id"), inverseJoinColumns = @JoinColumn(name = "animal_type_id"))
+  public Set<PetType> petTypes;
+
+  @Column(name = "batch_number")
+  private String batchNumber;
+
+  @Column(name = "expiry_date")
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  private LocalDate expiryDate;
+
+  public void setPetTypes(Set<PetType> petTypes) {
+    this.petTypes = petTypes;
+  }
+
+  public Set<PetType> getPetTypes() {
+    return this.petTypes;
+  }
+
+  public int getNrOfPetTypes() {
+    return this.petTypes.size();
+  }
+
+  public String getBatchNumber() {
+    return batchNumber;
+  }
+
+  public void setBatchNumber(String batchNumber) {
+    this.batchNumber = batchNumber;
+  }
+
+  public LocalDate getExpiryDate() {
+    return expiryDate;
+  }
+
+  public void setExpiryDate(LocalDate expiryDate) {
+    this.expiryDate = expiryDate;
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=Java, title='DrugController.java']
+@Controller
+public class DrugController {
+
+  private final String ADD_OR_UPDATE_DRUG_VIEW = "drugs/addOrUpdateDrug";
+
+  private final DrugRepository drugRepo;
+  private final PetRepository pets;
+
+  public DrugController(DrugRepository drugs, PetRepository pets) {
+    this.drugRepo = drugs;
+    this.pets = pets;
+  }
+
+  @InitBinder
+  public void setAllowedFields(WebDataBinder dataBinder) {
+    dataBinder.setDisallowedFields("id");
+  }
+
+  @InitBinder("drug")
+  public void initDrugBinder(WebDataBinder dataBinder) {
+    dataBinder.setValidator(new DrugValidator());
+  }
+
+  @ModelAttribute("allPetTypes")
+  public Set<PetType> populatePetTypes() {
+    return new TreeSet<>(this.pets.findPetTypes());
+  }
+
+  @GetMapping("/drugs")
+  public String seeDrugsList(Map<String, Object> model) {
+    model.put("drugs", drugRepo.findAll());
+    return "drugs/drugsList";
+  }
+
+  @GetMapping("/drugs/new")
+  public String initAddDrugForm(Map<String, Object> model) {
+    model.put("drug", new Drug());
+    return ADD_OR_UPDATE_DRUG_VIEW;
+  }
+
+  @PostMapping("/drugs/new")
+  public String processAddDrugForm(@Valid Drug drug, BindingResult result, Map<String, Object> model) {
+    if (result.hasErrors()) {
+      model.put("drug", drug);
+      return ADD_OR_UPDATE_DRUG_VIEW;
+    } else {
+      this.drugRepo.save(drug);
+      return "redirect:/drugs";
+    }
+  }
+
+  @GetMapping("/drugs/edit/{drug_Id}")
+  public String initUpdateDrugForm(@PathVariable("drug_Id") int drug_Id, Map<String, Object> model) {
+    Drug drug = this.drugRepo.findById(drug_Id);
+    model.put("drug", drug);
+    return ADD_OR_UPDATE_DRUG_VIEW;
+  }
+
+  @PostMapping("/drugs/edit/{drug_Id}")
+  public String processUpdateDrugForm(@Valid Drug drug, @PathVariable("drug_Id") int drug_Id, BindingResult result, Map<String, Object> model) {
+    if (result.hasErrors()) {
+      model.put("drug", drug);
+      return ADD_OR_UPDATE_DRUG_VIEW;
+    } else {
+      drug.setId(drug_Id);
+      this.drugRepo.save(drug);
+      return "redirect:/drugs";
+    }
+  }
+
+  @GetMapping("/drugs/delete/{drug_Id}")
+  public String deleteDrug(@PathVariable("drug_Id") int drugId) {
+    this.drugRepo.deleteDrugById(drugId);
+    return "redirect:/drugs";
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=HTML, title='drugsList.html']
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'drugs')}">
+
+<body>
+
+<h2>Drugs</h2>
+
+<table id="drugs" class="table table-striped">
+    <thead>
+    <tr>
+        <th style="width: 200px;">Name</th>
+        <th>Pet type</th>
+        <th>Batch number</th>
+        <th style="width: 120px">Expiry date</th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="drug : ${drugs}">
+        <td th:text="${drug.getName()}"></td>
+        <td>
+            <span th:if="${drug.getNrOfPetTypes()} > 0"
+                  th:each="petType, iter : ${drug.getPetTypes()}"
+                  th:text="${petType.getName()} + (!${iter.last} ? ', ' : '')"></span>
+            <span th:unless="${drug.getNrOfPetTypes()} > 0">none</span>
+        </td>
+        <td th:text="${drug.getBatchNumber()}"></td>
+        <td th:text="${drug.getExpiryDate()}"></td>
+        <td>
+            <a th:href="'/drugs/edit/' + ${drug.getId()}">Edit</a>
+        </td>
+        <td>
+            <a th:href="'/drugs/delete/' + ${drug.getId()}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/drugs/new" class="btn btn-default">Add New Drug</a>
+
+</body>
+</html>
+\end{lstlisting}
+
+\begin{lstlisting}[language=HTML, title='addOrUpdateDrug.html']
+<html xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'drugs')}">
+
+<body>
+
+<h2>
+    <th:block th:if="${drug.isNew()}">New </th:block>
+    <th:block th:unless="${drug.isNew()}">Edit </th:block>
+    Drug
+</h2>
+
+<form th:object="${drug}" class="form-horizontal" method="post">
+     <!-- th:action="${drug.isNew()} ? '/drugs/new' : '/drugs/edit/' + ${drug.getId()}" -->
+
+    <div class="form-group has-feedback">
+        <input th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}" />
+
+        <input th:replace="~{fragments/inputField :: input ('Batch number', 'batchNumber', 'text')}" />
+
+        <input th:replace="~{fragments/inputField :: input ('Expiry date', 'expiryDate', 'date')}" />
+
+        <input th:replace="~{fragments/multiSelectField :: multiSelect ('Pet types', 'petTypes', ${allPetTypes})}" />
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <input type="hidden" name="id" th:value="*{id}" />
+            <button th:with="text=${drug.isNew()} ? 'Add drug' : 'Update drug'"
+                    class="btn btn-default" type="submit" th:text="${text}"></button>
+        </div>
+    </div>
+</form>
+
+</body>
+</html>
+\end{lstlisting}
+
 
 \end{document}

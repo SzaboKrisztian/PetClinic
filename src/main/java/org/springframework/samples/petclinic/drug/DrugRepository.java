@@ -7,14 +7,14 @@ import java.util.List;
 
 public interface DrugRepository extends Repository<Drug, Integer> {
 
-    @Transactional(readOnly = true)
-    Drug findById(Integer id);
+  @Transactional(readOnly = true)
+  Drug findById(Integer id);
 
-    @Transactional(readOnly = true)
-    List<Drug> findAll();
+  @Transactional(readOnly = true)
+  List<Drug> findAll();
 
-    Drug save(Drug drug);
+  Drug save(Drug drug);
 
-    @Transactional
-    void deleteDrugById(Integer id);
+  @Transactional
+  void deleteDrugById(Integer id);
 }

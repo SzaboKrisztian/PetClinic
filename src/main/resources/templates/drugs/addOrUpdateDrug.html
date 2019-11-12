@@ -4,27 +4,27 @@
 <body>
 
 <h2>
-    <th:block th:if="${drug.isNew()}">New </th:block>
-    <th:block th:unless="${drug.isNew()}">Edit </th:block>
+    <th:block th:if="${drug.isNew()}">New</th:block>
+    <th:block th:unless="${drug.isNew()}">Edit</th:block>
     Drug
 </h2>
 
 <form th:object="${drug}" class="form-horizontal" method="post">
-     <!-- th:action="${drug.isNew()} ? '/drugs/new' : '/drugs/edit/' + ${drug.getId()}" -->
+    <!-- th:action="${drug.isNew()} ? '/drugs/new' : '/drugs/edit/' + ${drug.getId()}" -->
 
     <div class="form-group has-feedback">
-        <input th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}" />
+        <input th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}"/>
 
-        <input th:replace="~{fragments/inputField :: input ('Batch number', 'batchNumber', 'text')}" />
+        <input th:replace="~{fragments/inputField :: input ('Batch number', 'batchNumber', 'text')}"/>
 
-        <input th:replace="~{fragments/inputField :: input ('Expiry date', 'expiryDate', 'date')}" />
+        <input th:replace="~{fragments/inputField :: input ('Expiry date', 'expiryDate', 'date')}"/>
 
-        <input th:replace="~{fragments/multiSelectField :: multiSelect ('Pet types', 'petTypes', ${allPetTypes})}" />
+        <input th:replace="~{fragments/multiSelectField :: multiSelect ('Pet types', 'petTypes', ${allPetTypes})}"/>
     </div>
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <input type="hidden" name="id" th:value="*{id}" />
+            <input type="hidden" name="id" th:value="*{id}"/>
             <button th:with="text=${drug.isNew()} ? 'Add drug' : 'Update drug'"
                     class="btn btn-default" type="submit" th:text="${text}"></button>
         </div>
