@@ -26,7 +26,7 @@ public class DrugValidator implements Validator {
     }
 
     if (drug.getExpiryDate() == null) {
-      errors.rejectValue("batchNumber", REQ, REQ);
+      errors.rejectValue("expiryDate", REQ, REQ);
     }
   }
 }

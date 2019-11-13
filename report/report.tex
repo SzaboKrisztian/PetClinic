@@ -38,43 +38,57 @@
 \pagenumbering{arabic}
 \newpage
 
-\section{Introduction}
-In this project, I employed the following technologies:
+\section{Technologies employed}
 \begin{itemize}
 \item \textbf{Java}: A high level object-oriented programming language that runs on the Java Virtual Machine.
-\item \textbf{Spring}: an open source Model-View-Controller based application framework for Java, that is meant to facilitate the development of web applications. Spring boot is an opinionated approach that is mean to help the developer get going fast, by providing sensible defaults and including what are considered to be the best and most used third party libraries.
+\item \textbf{Spring}: an open source Model-View-Controller (henceforth referred to as MVC) based application framework for Java, that is meant to facilitate the development of web applications. Spring boot is an opinionated approach that is mean to help the developer get going fast, by providing sensible defaults and including what are considered to be the best and most used third party libraries.
 
-The Model-View-Controller (henceforth referred to as MVC) is a software design pattern, or as some call it, a high-level software architecture pattern, that is widely used in developing applications that feature a user interface. Its purpose is to decouple the business logic (the models) from the user interface (the views) and provide a means of communication between these two elements (the controllers). There are variations as to how the MVC pattern can be implemented, but in the more classic approach, the controller is the entry point to the program. This instantiates the required models and views, to which it passes a reference of itself, to facilitate communication from them back to the controller. The user only interacts with the views, which have the role of displaying themselves, and of accepting user input. This input is processed by the controller, which decides what action to take, like, for example, changing some values in the model.
+MVC is a software design pattern, or as some call it, a high-level software architecture pattern, that is widely used in developing applications that feature a user interface. Its purpose is to decouple the data (the models) from the user interface (the views) and provide a means of communication between these two elements (the controllers). There are variations as to how the MVC pattern can be implemented, but in the more classic approach, the controller is the entry point to the program. This instantiates the required models and views, to which it passes a reference of itself, to facilitate communication from them back to the controller. The user only interacts with the views, which have the role of displaying themselves, and of accepting user input. This input is processed by the controller, which decides what action to take, like, for example, updating some values in the model.
 
 The MVC pattern achieves great decoupling between the different components, and allows for the models and views to be reused.
-\item \textbf{Thymeleaf}: A powerful and very flexible templating engine for Spring.
-\item \textbf{Tomcat}: A pure Java HTTP web server which can run Java code.
-\item \textbf{Maven}: A build automation tool primarily used for Java projects. This allows for easy management of a projects dependencies.
+\item \textbf{Thymeleaf}: A powerful and very flexible templating engine for Spring. This is used to programmatically generate the \textit{.html} views and populate them with data.
+\item \textbf{Maven}: A build automation tool primarily used for Java projects. This allows for easy management of a project's dependencies.
+\item \textbf{Tomcat}: A pure Java HTTP web server which can run Java code. Maven uses this to launch and serve the web application.
 \item \textbf{Git}: The most popular version control tool to keep track of changes to a code base.
+\item \textbf{GitHub}: The most popular online hosting solution for Git repositories, which also allows easy collaboration among developers on a given code base.
 \end{itemize}
 
 \newpage
 \section{Implementing the changes}
 I already had my development environment set up, with JDK, Maven, and git correctly installed and added to the environment variables. Cloning the repository to a local folder was also trivial.
 
-The first real step in tackling this assignment was to identify where to make changes within the codebase. By default, the Pet Clinic web application uses \textbf{hsqldb} as data storage. I found out that it works as an in-memory database, which creates its structure and populates it with data at runtime. So the place to modify the table structure is in the \textbf{src/main/resources/db/hsqldb/schema.sql} file and adding data to populate it in the \textbf{src/main/resources/db/hsqldb/data.sql} file.
+The first real step in tackling this assignment was to identify where to make changes within the code base. By default, the Pet Clinic web application uses \textbf{hsqldb} as data storage. I found out that it works as an in-memory database, which creates its structure and populates it with data at runtime. So the place to modify the table structure is in the \textbf{src/main/resources/db/hsqldb/schema.sql} file and adding data to populate it in the \textbf{src/main/resources/db/hsqldb/data.sql} file.
 
 The next thing to be modified was to add a new menu entry on the navigation bar for the future view that needed to be created. I found the navigation bar as a thymeleaf fragment in the \textbf{src/main/resources/templates/fragments/layout.html} file. I added an additional entry and pointed it to "/drugs" mapping, which for the moment does not yet exist.
 
-Next task was to define the \textbf{Drug} class, which in our case should extend the existing \textbf{NamedEntity} class. It has to define the \textbf{type}, \textbf{batchNumber}, and \textbf{expiryDate} attributes, and bind them to their respective SQL columns. The \textbf{id} and \textbf{name} attributes are taken care of in the \textbf{BaseEntity} and \textbf{NamedEntity} superclasses, respectively.
+Next task was to define the \textbf{Drug} class, which in our case should extend the existing \textbf{NamedEntity} class. It has to define the \textbf{petType}, \textbf{batchNumber}, and \textbf{expiryDate} attributes, and bind them to their respective SQL columns. The \textbf{id} and \textbf{name} attributes are taken care of in the \textbf{BaseEntity} and \textbf{NamedEntity} superclasses, respectively.
 
-Then, I defined the \textbf{DrugRepository} interface, which defines some basic methods for retrieving and saving \textbf{Drug} entities from and to the database. Having done this, I moved to writing the \textbf{DrugController} class. In it, I added an instance of \textbf{DrugRepository} and defined the GET mapping for "/drugs". All this does is it inserts a list of all the available \textbf{Drug} entities into the model, and returns the \textbf{src/main/resources/templates/drugs/drugs.html} view. Next I went ahead and actually created the view, which consists of a simple html table which is populated by thymeleaf by iterating over the list of \textbf{Drug} entities that was sent from the controller through the model.
+Then, I defined the \textbf{DrugRepository} interface, which defines some basic methods for retrieving and saving \textbf{Drug} entities from and to the database. Having done this, I moved to writing the \textbf{DrugController} class. In it, I added an instance of \textbf{DrugRepository} and defined the GET mapping for "/drugs". All this does is it inserts a list of all the available \textbf{Drug} entities into the model, and returns the \textbf{src/main/resources/templates/drugs/drugs.html} view. Next I went ahead and actually created the view, which consists of a simple \textit{html} table which is populated by thymeleaf by iterating over the list of \textbf{Drug} entities that was sent from the controller through the model.
 
 After getting this to work, I realized that it would make logical sense to define a many-to-many relationship between the newly created drugs and the animal types, as one drug can most likely be used for several animals. To achieve this, I added a new table to the \textbf{schema.sql} file, that only serves the purpose of mapping this relationship, by the means of having only two columns, which are each a foreign key pointing to the \textbf{id} columns of the \textbf{drugs} and \textbf{types} tables, respectively. I then went ahead and modified the \textbf{Drugs} POJO to hold, instead of a single \textbf{PetType} attribute, a \textbf{Set\textless PetType\textgreater}. The last change needed to be made was in the view, for each drug displayed in the table, to iterate over all of its associated \textbf{PetType} objects and show them in a nicely formatted string.
 
 Inspired by the way thymeleaf templates are used throughout the project to generate and populate web forms, I then went ahead and wrote \textbf{src/main/resources/templates/drugs/addOrUpdateDrug.html} in a similar manner, to serve as the view for both adding and updating \textbf{Drug} entries. For this to work, I next had to define the four new mappings in the \textbf{DrugController} class, a \textit{GET} and a \textit{POST} mapping for both the add and update functionality, and I added the relevant links in the main \textbf{drugs.html} view, namely an \textit{"Add new drug"} button, and an \textit{"Edit"} and a \textit{"Delete"} link for each entry in the table. I also added a \textbf{DrugValidator} class to handle data validation in these two new views.
+
+Lastly, after having talked about testing in class, I spent some more time understanding the integration tests that the original authors of this project have written. I then created a test suite called \textbf{DrugControllerTests.java} to test the new functionality that I've added to the project. This contains a setup method that is run before each test case, which populates the mocked repositories with some sample data, and then eight actual test cases:
+\begin{itemize}
+\item \textbf{testDrugList()}: tests the view drug list functionality
+\item \textbf{testInitCreationForm()}: tests the creation of the add new drug form
+\item \textbf{testProcessCreationFormSuccess()}: tests a correct submission of the add new drug form
+\item \textbf{testProcessCreationFormHasErrors()}: tests an invalid submission of the add new drug form
+\item \textbf{testInitUpdateForm()}: tests the creation of the update drug form
+\item \textbf{testProcessUpdateFormSuccess()}: tests a correct submission of the update drug form
+\item \textbf{testProcessUpdateFormHasErrors()}: tests an invalid submission of the update drug form
+\item \textbf{testDeleteDrugEntry()}: tests the delete drug functionality
+\end{itemize}
 
 \newpage
 \section{Final thoughts}
 
 The process of making changes to this sample Spring project was quite enlightening, and I feel that I learned a lot from it. I got to see for the first time a code base that uses Spring's capabilities to the maximum, and I now realize that last semester's project could have been done in a much more efficient manner (though, to be fair, there were some limitations imposed on us by our teachers, for specific purposes). The most difficult part, so to speak, was understanding the code base. This took up the greatest part of my time spent on this project. Otherwise, after having understood what the original authors have built, implementing new functionality in the same style as theirs was fairly straight-forward.
 
-I did hit a snag at one point, which took me a good few hours to debug. It had to do with getting Spring / Thymeleaf to correctly bind the multi-select box in the \textbf{addOrUpdateDrug.html} view to the \textbf{Drug} class' \textbf{petType} attribute, which is a collection of the type \textbf{Set\textless PetType\textgreater}. I didn't find any relevant documentation on this behavior, but apparently, when binding a web form to an object, Spring expects the POJO to have plain getters and setters for the attributes that are to be bound. I had originally written a slightly more complicated setter for this collection attribute in the \textbf{Drug} class, inspired by the authors' \textbf{Owner} class, and this lead Spring not being able to insert the data submitted in the web form into the POJO's respective attribute.
+I did hit a snag at one point, which took me a good few hours to debug. It had to do with getting Spring / Thymeleaf to correctly bind the multi-select box in the \textbf{addOrUpdateDrug.html} view to the \textbf{Drug} class' \textbf{petTypes} attribute, which is a collection of the type \textbf{Set\textless PetType\textgreater}. I didn't find any relevant documentation on this behavior, but apparently, when binding a web form to an object, Spring expects the POJO to have plain getters and setters for the attributes that are to be bound. I had originally written a slightly more complicated setter for this collection attribute in the \textbf{Drug} class, inspired by the authors' \textbf{Owner} class, and this lead to Spring not being able to insert the data submitted in the web form into the POJO's respective attribute.
+
+Writing the integration tests was not completely easy either, mostly because of no previous experience with Spring's \textbf{MockMvc} testing tools. I did manage to do so for a series of test cases, but not for everything that I would have liked to test. For example, I didn't manage to test the multiple select box on the \textbf{addOrUpdateDrug.html} view. Even though I used Wireshark to see the exact parameters of the \textit{HTTP POST} request that this web form input generates, and I reproduced them exactly within the test suite, Spring refused to convert from the submitted \textbf{String} parameters into the actual \textbf{Set\textless PetType\textgreater} needed. This conversion succeeds when running the app, but does not when running the tests. It might be that I'm making some wrong assumptions about the way \textbf{MockMvc} should be used in this case, but I couldn't find any information about this online.
 
 \newpage
 \section{Code listings}
@@ -94,6 +108,40 @@ CREATE TABLE drugs_for_animal (
 );
 ALTER TABLE drugs_for_animal ADD CONSTRAINT fk_drugs_for_animal_types FOREIGN KEY (animal_type_id) REFERENCES types (id);
 ALTER TABLE drugs_for_animal ADD CONSTRAINT fk_drugs_for_animal_drug FOREIGN KEY (drug_id) REFERENCES drugs (id);
+\end{lstlisting}
+
+\begin{lstlisting}[language=SQL, title='data.sql']
+INSERT INTO drugs
+VALUES (1, 'Drug one', 'B015L087', '2020-12-21');
+INSERT INTO drugs
+VALUES (2, 'Drug two', 'B005L027', '2022-06-29');
+INSERT INTO drugs
+VALUES (3, 'Drug three', 'B132L422', '2022-08-13');
+INSERT INTO drugs
+VALUES (4, 'Drug four', 'B073L132', '2021-10-10');
+INSERT INTO drugs
+VALUES (5, 'Drug five', 'B277L091', '2024-01-01');
+
+INSERT INTO drugs_for_animal
+VALUES (1, 1);
+INSERT INTO drugs_for_animal
+VALUES (1, 2);
+INSERT INTO drugs_for_animal
+VALUES (2, 3);
+INSERT INTO drugs_for_animal
+VALUES (2, 4);
+INSERT INTO drugs_for_animal
+VALUES (3, 5);
+INSERT INTO drugs_for_animal
+VALUES (4, 6);
+INSERT INTO drugs_for_animal
+VALUES (5, 1);
+INSERT INTO drugs_for_animal
+VALUES (5, 2);
+INSERT INTO drugs_for_animal
+VALUES (5, 5);
+INSERT INTO drugs_for_animal
+VALUES (5, 6);
 \end{lstlisting}
 
 \begin{lstlisting}[language=Java, title='Drug.java']
@@ -142,6 +190,51 @@ public class Drug extends NamedEntity {
 }
 \end{lstlisting}
 
+\begin{lstlisting}[language=Java, title='DrugRepository.java']
+public interface DrugRepository extends Repository<Drug, Integer> {
+
+  @Transactional(readOnly = true)
+  Drug findById(Integer id);
+
+  @Transactional(readOnly = true)
+  List<Drug> findAll();
+
+  Drug save(Drug drug);
+
+  @Transactional
+  void deleteDrugById(Integer id);
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=Java, title='DrugValidator.java']
+public class DrugValidator implements Validator {
+
+  private final String REQ = "required";
+
+  @Override
+  public boolean supports(Class<?> aClass) {
+    return Drug.class.isAssignableFrom(aClass);
+  }
+
+  @Override
+  public void validate(Object o, Errors errors) {
+    Drug drug = (Drug) o;
+
+    if (!StringUtils.hasLength(drug.getName())) {
+      errors.rejectValue("name", REQ, REQ);
+    }
+
+    if (!StringUtils.hasLength(drug.getBatchNumber())) {
+      errors.rejectValue("batchNumber", REQ, REQ);
+    }
+
+    if (drug.getExpiryDate() == null) {
+      errors.rejectValue("expiryDate", REQ, REQ);
+    }
+  }
+}
+\end{lstlisting}
+
 \begin{lstlisting}[language=Java, title='DrugController.java']
 @Controller
 public class DrugController {
@@ -154,11 +247,6 @@ public class DrugController {
   public DrugController(DrugRepository drugs, PetRepository pets) {
     this.drugRepo = drugs;
     this.pets = pets;
-  }
-
-  @InitBinder
-  public void setAllowedFields(WebDataBinder dataBinder) {
-    dataBinder.setDisallowedFields("id");
   }
 
   @InitBinder("drug")
@@ -202,12 +290,11 @@ public class DrugController {
   }
 
   @PostMapping("/drugs/edit/{drug_Id}")
-  public String processUpdateDrugForm(@Valid Drug drug, @PathVariable("drug_Id") int drug_Id, BindingResult result, Map<String, Object> model) {
+  public String processUpdateDrugForm(@Valid Drug drug, BindingResult result, ModelMap model) {
     if (result.hasErrors()) {
       model.put("drug", drug);
       return ADD_OR_UPDATE_DRUG_VIEW;
     } else {
-      drug.setId(drug_Id);
       this.drugRepo.save(drug);
       return "redirect:/drugs";
     }
@@ -282,7 +369,6 @@ public class DrugController {
 </h2>
 
 <form th:object="${drug}" class="form-horizontal" method="post">
-     <!-- th:action="${drug.isNew()} ? '/drugs/new' : '/drugs/edit/' + ${drug.getId()}" -->
 
     <div class="form-group has-feedback">
         <input th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}" />
@@ -307,5 +393,116 @@ public class DrugController {
 </html>
 \end{lstlisting}
 
+\begin{lstlisting}[language=Java, title='DrugControllerTests.java']
+@WebMvcTest(DrugController.class)
+public class DrugControllerTests {
+
+  @Autowired
+  private MockMvc mockMvc;
+
+  @MockBean
+  private DrugRepository drugRepo;
+
+  @MockBean
+  private PetRepository petRepo;
+
+  @BeforeEach
+  void setup() {
+    PetType dog = new PetType();
+    dog.setId(1);
+    dog.setName("dog");
+    PetType cat = new PetType();
+    cat.setId(2);
+    cat.setName("cat");
+    PetType rat = new PetType();
+    rat.setId(3);
+    rat.setName("rat");
+    given(this.petRepo.findPetTypes()).willReturn(Lists.newArrayList(dog, cat, rat));
+
+    Drug someDrug = new Drug();
+    someDrug.setId(1);
+    someDrug.setName("Some Drug");
+    someDrug.setPetTypes(Sets.newLinkedHashSet(dog, cat));
+    someDrug.setBatchNumber("SD1233B01");
+    someDrug.setExpiryDate(LocalDate.now().plusYears(2));
+    given(this.drugRepo.findAll()).willReturn(Lists.newArrayList(someDrug));
+    given(this.drugRepo.findById(1)).willReturn(someDrug);
+  }
+
+  @Test
+  void testDrugList() throws Exception {
+    mockMvc.perform(get("/drugs"))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists("allPetTypes"))
+        .andExpect(model().attributeExists("drugs"))
+        .andExpect(view().name("drugs/drugsList"));
+  }
+
+  @Test
+  void testInitCreationForm() throws Exception {
+    mockMvc.perform(get("/drugs/new"))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists("allPetTypes"))
+        .andExpect(model().attributeExists("drug"))
+        .andExpect(view().name("drugs/addOrUpdateDrug"));
+  }
+
+  @Test
+  void testProcessCreationFormSuccess() throws Exception {
+    mockMvc.perform(post("/drugs/new")
+        .param("name", "New Drug")
+        .param("batchNumber", "SBN4431L01")
+        .param("expiryDate", "2025-12-12")
+        .param("id", "")
+    )
+        .andExpect(status().is3xxRedirection());
+  }
+
+  @Test
+  void testProcessCreationFormHasErrors() throws Exception {
+    mockMvc.perform(post("/drugs/new"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("drugs/addOrUpdateDrug"))
+        .andExpect(model().attributeHasErrors("drug"))
+        .andExpect(model().attributeHasFieldErrors("drug", "name", "batchNumber", "expiryDate"));
+  }
+
+  @Test
+  void testInitUpdateForm() throws Exception {
+    mockMvc.perform(get("/drugs/edit/{drug_id}", 1))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists("allPetTypes"))
+        .andExpect(model().attributeExists("drug"))
+        .andExpect(model().attribute("drug", drugRepo.findById(1)))
+        .andExpect(view().name("drugs/addOrUpdateDrug"));
+  }
+
+  @Test
+  void testProcessUpdateFormSuccess() throws Exception {
+    mockMvc.perform(post("/drugs/edit/{drug_Id}", 1)
+        .param("name", "Changed name")
+        .param("batchNumber", "Makes no sense")
+        .param("expiryDate", "2099-12-12")
+        .param("id", "1")
+    )
+        .andExpect(status().is3xxRedirection());
+  }
+
+  @Test
+  void testProcessUpdateFormHasErrors() throws Exception {
+    mockMvc.perform(post("/drugs/edit/{drug_Id}", 1))
+        .andExpect(status().isOk())
+        .andExpect(view().name("drugs/addOrUpdateDrug"))
+        .andExpect(model().attributeHasErrors("drug"))
+        .andExpect(model().attributeHasFieldErrors("drug", "name", "batchNumber", "expiryDate"));
+  }
+
+  @Test
+  void testDeleteDrugEntry() throws Exception {
+    mockMvc.perform(get("/drugs/delete/{drug_Id}", 1))
+        .andExpect(status().is3xxRedirection());
+  }
+}
+\end{lstlisting}
 
 \end{document}

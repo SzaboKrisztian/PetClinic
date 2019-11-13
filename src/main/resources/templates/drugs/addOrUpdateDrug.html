@@ -10,7 +10,6 @@
 </h2>
 
 <form th:object="${drug}" class="form-horizontal" method="post">
-    <!-- th:action="${drug.isNew()} ? '/drugs/new' : '/drugs/edit/' + ${drug.getId()}" -->
 
     <div class="form-group has-feedback">
         <input th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}"/>
